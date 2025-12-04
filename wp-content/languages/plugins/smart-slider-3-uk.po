@@ -1,0 +1,68 @@
+# Translation of Plugins - Smart Slider 3 - Stable (latest release) in Ukrainian
+# This file is distributed under the same license as the Plugins - Smart Slider 3 - Stable (latest release) package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2020-09-08 08:08:29+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n % 10 == 1 && n % 100 != 11) ? 0 : ((n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14)) ? 1 : 2);\n"
+"X-Generator: GlotPress/4.0.1\n"
+"Language: uk_UA\n"
+"Project-Id-Version: Plugins - Smart Slider 3 - Stable (latest release)\n"
+
+#. Author URI of the plugin
+#: smart-slider-3.php
+msgid "https://smartslider3.com"
+msgstr "https://smartslider3.com"
+
+#: Nextend/SmartSlider3/Platform/WordPress/Integration/Divi/V31ge/includes/modules/SmartSlider3/SmartSlider3.php:101
+msgid "Here you can create the content that will be used within the module."
+msgstr "Тут Ви можете створити контент, який буде використано всередині модуля."
+
+#. Plugin URI of the plugin
+#: smart-slider-3.php
+msgid "https://smartslider3.com/"
+msgstr "https://smartslider3.com/"
+
+#: Nextend/SmartSlider3/Platform/WordPress/Integration/BeaverBuilder/SmartSlider3.php:15
+#: Nextend/SmartSlider3/Platform/WordPress/Integration/BeaverBuilder/SmartSlider3Legacy.php:15
+msgid "Basic Modules"
+msgstr "Базові модулі"
+
+#. Description of the plugin
+#: smart-slider-3.php
+msgid "The perfect all-in-one responsive slider solution for WordPress."
+msgstr "Відмінний все-в-одному адаптивний варіант слайдера для WordPress."
+
+#. Plugin Name of the plugin
+#: smart-slider-3.php
+msgid "Smart Slider 3"
+msgstr "Smart Slider 3"
+
+#: Nextend/SmartSlider3/Platform/WordPress/Integration/BeaverBuilder/BeaverBuilder.php:88
+#: Nextend/SmartSlider3/Platform/WordPress/Integration/BeaverBuilder/BeaverBuilder.php:109
+msgid "General"
+msgstr "Головне"
+
+#: Nextend/SmartSlider3/Platform/WordPress/Integration/Unyson/smartslider/shortcodes/smartslider/config.php:10
+msgid "Media Elements"
+msgstr "Медіа Елементи"
+
+#: Nextend/SmartSlider3/Platform/WordPress/Integration/Divi/V31ge/includes/modules/SmartSlider3/SmartSlider3.php:28
+#: Nextend/SmartSlider3/Platform/WordPress/Integration/VisualComposer1/VisualComposer1.php:84
+msgid "Content"
+msgstr "Вміст"
+
+#: Nextend/SmartSlider3/Platform/WordPress/Integration/Divi/V31lt/DiviModuleSmartSlider.php:66
+msgid "This will change the label of the module in the builder for easy identification."
+msgstr "Це змінить мітку модуля в білдері для легкої ідентифікації."
+
+#. Author of the plugin
+#: smart-slider-3.php
+msgid "Nextend"
+msgstr "Nextend"
+
+#: Nextend/SmartSlider3/Platform/WordPress/Integration/Divi/V31lt/DiviModuleSmartSlider.php:64
+msgid "Admin Label"
+msgstr "Мітка адміністратора"

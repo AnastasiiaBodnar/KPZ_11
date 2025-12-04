@@ -1,0 +1,242 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Animate It\n"
+"POT-Creation-Date: 2016-06-10 17:58+0530\n"
+"PO-Revision-Date: 2016-07-11 10:56+0530\n"
+"Last-Translator: Eleopard Design Studios <contact@eleopard.in>\n"
+"Language-Team: Santiago Marrone <santiagocmarrone@gmail.com>\n"
+"Language: es_AR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
+"X-Poedit-Basepath: ..\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: _e;__\n"
+"X-Poedit-SearchPathExcluded-0: lang\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: assets/helper/eds-tinymce-plugin-langs.php:12
+#: assets/helper/edsanimate-tinymce-popup.php:8
+#: build/index.js:1
+msgid "Select your Animation Style"
+msgstr "Seleccione su Estilo de Animación"
+
+#: assets/helper/edsanimate-tinymce-popup.php:30
+#: build/index.js:1
+msgid "Entry"
+msgstr "Entrada"
+
+#: assets/helper/edsanimate-tinymce-popup.php:33
+#: build/index.js:1
+msgid "Exit"
+msgstr "Salida"
+
+#: assets/helper/edsanimate-tinymce-popup.php:36
+#: build/index.js:1
+msgid "Options"
+msgstr "Opciones"
+
+#: assets/helper/edsanimate-tinymce-popup.php:42
+#: assets/helper/edsanimate-tinymce-popup.php:199
+#: build/index.js:1
+msgid "Animation"
+msgstr "Animación"
+
+#: assets/helper/edsanimate-tinymce-popup.php:46
+#: assets/helper/edsanimate-tinymce-popup.php:117
+#: assets/helper/edsanimate-tinymce-popup.php:203
+#: assets/helper/edsanimate-tinymce-popup.php:274
+#: build/index.js:1
+msgid "None"
+msgstr "Ninguno"
+
+#: assets/helper/edsanimate-tinymce-popup.php:113
+#: assets/helper/edsanimate-tinymce-popup.php:270
+#: build/index.js:1
+msgid "Delay (in seconds)"
+msgstr "Retraso (en segundos)"
+
+#: assets/helper/edsanimate-tinymce-popup.php:130
+#: assets/helper/edsanimate-tinymce-popup.php:153
+#: assets/helper/edsanimate-tinymce-popup.php:287
+#: assets/helper/edsanimate-tinymce-popup.php:310
+#: assets/helper/edsanimate-tinymce-popup.php:364
+#: build/index.js:1
+msgid "Custom"
+msgstr "Personalizado"
+
+#: assets/helper/edsanimate-tinymce-popup.php:137
+#: assets/helper/edsanimate-tinymce-popup.php:294
+#: build/index.js:1
+msgid "Duration (in seconds)"
+msgstr "Duración (en segundos)"
+
+#: assets/helper/edsanimate-tinymce-popup.php:160
+#: assets/helper/edsanimate-tinymce-popup.php:317
+#: build/index.js:1
+msgid "Timing"
+msgstr "Sincronización"
+
+#: assets/helper/edsanimate-tinymce-popup.php:356
+#: build/index.js:1
+msgid "Animation Repeat"
+msgstr "Repetición de la Animación"
+
+#: assets/helper/edsanimate-tinymce-popup.php:360
+#: build/index.js:1
+msgid "Once"
+msgstr "Una vez"
+
+#: assets/helper/edsanimate-tinymce-popup.php:361
+#: build/index.js:1
+msgid "Twice"
+msgstr "Dos veces"
+
+#: assets/helper/edsanimate-tinymce-popup.php:362
+#: build/index.js:1
+msgid "Thrice"
+msgstr "Tres veces"
+
+#: assets/helper/edsanimate-tinymce-popup.php:363
+#: build/index.js:1
+msgid "Infinite"
+msgstr "Infinitamente"
+
+#: assets/helper/edsanimate-tinymce-popup.php:371
+#: build/index.js:1
+msgid "Keep Element Final State"
+msgstr "Mantener el estado final del elemento"
+
+#: assets/helper/edsanimate-tinymce-popup.php:374 edsanimate.php:229
+#: edsanimate.php:240 edsanimate.php:251 edsanimate.php:262
+#: build/index.js:1
+msgid "Yes"
+msgstr "Sí"
+
+#: assets/helper/edsanimate-tinymce-popup.php:376 edsanimate.php:230
+#: edsanimate.php:241 edsanimate.php:252 edsanimate.php:263
+#: build/index.js:1
+msgid "No"
+msgstr "No"
+
+#: assets/helper/edsanimate-tinymce-popup.php:380
+#: build/index.js:1
+msgid "Custom CSS Class"
+msgstr "Clase CSS personalizada"
+
+#: assets/helper/edsanimate-tinymce-popup.php:388
+#: build/index.js:1
+msgid "Animate On"
+msgstr "Momento de la Animación"
+
+#: assets/helper/edsanimate-tinymce-popup.php:391
+#: build/index.js:1
+msgid "Load"
+msgstr "Load"
+
+#: assets/helper/edsanimate-tinymce-popup.php:393
+#: build/index.js:1
+msgid "Click"
+msgstr "Click"
+
+#: assets/helper/edsanimate-tinymce-popup.php:395
+#: build/index.js:1
+msgid "Hover"
+msgstr "Hover"
+
+#: assets/helper/edsanimate-tinymce-popup.php:397
+#: build/index.js:1
+msgid "Scroll"
+msgstr "Scroll"
+
+#: assets/helper/edsanimate-tinymce-popup.php:402
+#: build/index.js:1
+msgid "Scroll Offset (in %)"
+msgstr "Compensación de desplazamiento (en %)"
+
+#: assets/helper/edsanimate-tinymce-popup.php:414
+#: build/index.js:1
+msgid "Powered by"
+msgstr "Producido por"
+
+#: assets/helper/edsanimate-tinymce-popup.php:417
+#: build/index.js:1
+msgid "Review Plugin"
+msgstr "Calificar Plugin"
+
+#: assets/helper/edsanimate-tinymce-popup.php:420
+#: build/index.js:1
+msgid "Documentation"
+msgstr "Documentación"
+
+#: assets/helper/edsanimate-tinymce-popup.php:424
+#: build/index.js:1
+msgid "Stop Animation"
+msgstr "Detener Animación"
+
+#: assets/helper/edsanimate-tinymce-popup.php:425 edsanimate.php:101
+#: build/index.js:1
+msgid "Animate It!"
+msgstr "Animate It!"
+
+#: assets/helper/edsanimate-tinymce-popup.php:426
+#: build/index.js:1
+msgid "Insert"
+msgstr "Insertar"
+
+#: edsanimate.php:100 edsanimate.php:167
+#: build/index.js:1
+msgid "Animate It! Options"
+msgstr "Opciones de Animate It!"
+
+#: edsanimate.php:194
+#: build/index.js:1
+msgid "Options saved."
+msgstr "Opciones guardadas."
+
+#: edsanimate.php:200
+#: build/index.js:1
+msgid "Failed to save options."
+msgstr "Error al guardar las opciones."
+
+#: edsanimate.php:216
+#: build/index.js:1
+msgid "Scroll Offset (in percentage)"
+msgstr "Compensación de desplazamiento (en porcentaje)"
+
+#: edsanimate.php:225
+#: build/index.js:1
+msgid "Enable on Smartphones"
+msgstr "Habilitar en Smartphones"
+
+#: edsanimate.php:236
+#: build/index.js:1
+msgid "Enable on Tablets"
+msgstr "Habilitar en Tablets"
+
+#: edsanimate.php:247
+#: build/index.js:1
+msgid "Hide Horizontal Scrollbar"
+msgstr "Esconder barra de desplazamiento horizontal"
+
+#: edsanimate.php:258
+#: build/index.js:1
+msgid "Hide Vertical Scrollbar"
+msgstr "Esconder barra de desplazamiento vertical"
+
+#: edsanimate.php:269
+#: build/index.js:1
+msgid "Custom CSS"
+msgstr "CSS personalizado"
+
+#: edsanimate.php:277
+#: build/index.js:1
+msgid "Submit"
+msgstr "Enviar"
+
+#: edsanimate.php:486
+#: build/index.js:1
+msgid "Animate It Classes"
+msgstr "Clases Animate It"

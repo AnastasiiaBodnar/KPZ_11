@@ -1,0 +1,27 @@
+/**
+ * Note that these styles are loaded *after* common styles, so that
+ * editor-specific styles using the same selectors will take precedence.
+ */
+
+ .eds-animate-block-edit {
+	background: transparent;    
+    border: 1px solid #787878;
+    border-radius: 4px;
+	padding: 20px;
+    position: relative;
+    z-index: 2;
+}
+
+.eds-animate-block-edit #eds-animate-icon {
+    width: 24px;
+    height: 24px;
+    position: absolute;
+    top: -12px;
+    left: -12px;
+}
+.components-tab-panel__tab-content{
+  padding: 20px;
+}
+.eds-active-tab{
+  color: red;
+}
