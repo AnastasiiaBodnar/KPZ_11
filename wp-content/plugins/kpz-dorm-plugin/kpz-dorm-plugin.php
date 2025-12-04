@@ -10,7 +10,7 @@ global $wpdb;
 $table_name = $wpdb->prefix . "kpz_students";
 
 /* -------------------------
-   1. CREATE TABLE ON ACTIVATE
+   CREATE TABLE ON ACTIVATE
 --------------------------- */
 function kpz_create_students_table() {
     global $wpdb;
@@ -33,7 +33,7 @@ register_activation_hook(__FILE__, 'kpz_create_students_table');
 
 
 /* -------------------------
-   2. ADMIN MENU
+   ADMIN MENU
 --------------------------- */
 function kpz_students_menu() {
     add_menu_page(
@@ -50,20 +50,19 @@ add_action("admin_menu", "kpz_students_menu");
 
 
 /* -------------------------
-   3. MAIN ADMIN PAGE
+   ADMIN PAGE (CRUD)
 --------------------------- */
 function kpz_students_page() {
     global $wpdb;
     $table = $wpdb->prefix . "kpz_students";
 
-    // Handle DELETE
+    // Delete
     if (isset($_GET['delete'])) {
-        $id = intval($_GET['delete']);
-        $wpdb->delete($table, ['id' => $id]);
+        $wpdb->delete($table, ['id' => intval($_GET['delete'])]);
         echo "<div class='updated'><p>Студента видалено.</p></div>";
     }
 
-    // Handle CREATE or UPDATE
+    // Save / Update
     if (isset($_POST['kpz_submit'])) {
 
         $data = [
@@ -165,7 +164,7 @@ function kpz_students_page() {
 
 
 /* -------------------------
-   4. SHORTCODE FOR FRONTEND
+   SHORTCODE FOR FRONTEND
 --------------------------- */
 function kpz_students_shortcode() {
     global $wpdb;
