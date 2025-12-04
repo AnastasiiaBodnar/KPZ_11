@@ -1,0 +1,10 @@
+.kpz-fade-in {
+    opacity: 0;
+    transform: translateY(25px);
+    transition: all 0.9s ease-out;
+}
+
+.kpz-fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
