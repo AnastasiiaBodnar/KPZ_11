@@ -3,15 +3,18 @@
 Template Name: Students Page
 */
 get_header();
+
+// Отримання студентів через плагін
+$students = do_shortcode('[kpz_students_list]');
 ?>
 
-<h1>Список студентів</h1>
+<div class="page-container">
+    <h1>Список студентів</h1>
 
-<ul>
-    <li>Анастасія — кімната 203</li>
-    <li>Олег — кімната 101</li>
-    <li>Марія — кімната 102</li>
-    <li>Діма — кімната 305</li>
-</ul>
+    <?php 
+    // Виводимо HTML який повертає шорткод
+    echo $students; 
+    ?>
+</div>
 
 <?php get_footer(); ?>
