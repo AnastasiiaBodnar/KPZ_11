@@ -2,16 +2,12 @@
 /*
 Plugin Name: KPZ Dorm Rooms CRUD
 Description: CRUD для кімнат гуртожитку (Create, Read, Update, Delete)
-Version: 2.0
 Author: Anastasiia Bodnar
 */
 
 global $wpdb;
 $table_name = $wpdb->prefix . "kpz_rooms";
 
-/* -------------------------
-   CREATE TABLE
---------------------------- */
 function kpz_create_rooms_table() {
     global $wpdb;
     $table = $wpdb->prefix . "kpz_rooms";
@@ -21,18 +17,23 @@ function kpz_create_rooms_table() {
         id INT NOT NULL AUTO_INCREMENT,
         room_number VARCHAR(20) NOT NULL UNIQUE,
         capacity INT NOT NULL,
+        occupied INT NOT NULL DEFAULT 0,
         PRIMARY KEY(id)
     ) $charset;";
 
     require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
     dbDelta($sql);
+    
+    $row = $wpdb->get_results("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS 
+                                WHERE table_name = '$table' AND column_name = 'occupied'");
+    
+    if(empty($row)) {
+        $wpdb->query("ALTER TABLE $table ADD occupied INT NOT NULL DEFAULT 0 AFTER capacity");
+    }
 }
 register_activation_hook(__FILE__, 'kpz_create_rooms_table');
 
 
-/* -------------------------
-   ADMIN MENU
---------------------------- */
 function kpz_rooms_menu() {
     add_menu_page(
         "Кімнати гуртожитку",
@@ -47,19 +48,29 @@ function kpz_rooms_menu() {
 add_action("admin_menu", "kpz_rooms_menu");
 
 
-/* -------------------------
-   ADMIN PAGE (CRUD)
---------------------------- */
 function kpz_rooms_page() {
     global $wpdb;
     $table = $wpdb->prefix . "kpz_rooms";
-    
-    // Перевірка прав доступу
+    $students_table = $wpdb->prefix . "kpz_students";
+
     if (!current_user_can('manage_options')) {
         wp_die(__('У вас немає прав для доступу до цієї сторінки.'));
     }
+    
+    if (isset($_GET['action']) && $_GET['action'] === 'sync') {
+        $wpdb->query("UPDATE $table SET occupied = 0");
+        
+        $wpdb->query("
+            UPDATE $table r 
+            SET occupied = (
+                SELECT COUNT(*) 
+                FROM $students_table s 
+                WHERE s.room_id = r.id
+            )
+        ");
+        
+    }
 
-    // DELETE
     if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])) {
         if (!isset($_GET['_wpnonce']) || !wp_verify_nonce($_GET['_wpnonce'], 'delete_room_' . intval($_GET['id']))) {
             wp_die('Помилка безпеки');
@@ -74,14 +85,11 @@ function kpz_rooms_page() {
         }
     }
 
-    // CREATE / UPDATE
     if (isset($_POST['kpz_submit'])) {
-        // Перевірка nonce
         if (!isset($_POST['kpz_room_nonce']) || !wp_verify_nonce($_POST['kpz_room_nonce'], 'kpz_room_action')) {
             wp_die('Помилка безпеки');
         }
 
-        // Валідація
         $errors = array();
         
         $room_number = sanitize_text_field($_POST['room_number']);
@@ -103,7 +111,6 @@ function kpz_rooms_page() {
             $room_id = intval($_POST['id']);
 
             if ($room_id == 0) {
-                // CREATE
                 $inserted = $wpdb->insert($table, $data, ['%s', '%d']);
                 
                 if ($inserted !== false) {
@@ -116,7 +123,6 @@ function kpz_rooms_page() {
                     }
                 }
             } else {
-                // UPDATE
                 $updated = $wpdb->update(
                     $table, 
                     $data, 
@@ -136,7 +142,6 @@ function kpz_rooms_page() {
         }
     }
 
-    // EDIT MODE
     $edit = null;
     if (isset($_GET['action']) && $_GET['action'] === 'edit' && isset($_GET['id'])) {
         $edit = $wpdb->get_row($wpdb->prepare("SELECT * FROM $table WHERE id = %d", intval($_GET['id'])));
@@ -152,6 +157,7 @@ function kpz_rooms_page() {
             <span class="dashicons dashicons-admin-home" style="font-size: 28px; width: 28px; height: 28px;"></span>
             Управління кімнатами гуртожитку
         </h1>
+    
         
         <?php if ($edit): ?>
             <a href="?page=kpz_rooms" class="page-title-action">← Повернутися до списку</a>
@@ -159,9 +165,8 @@ function kpz_rooms_page() {
         
         <hr class="wp-header-end">
 
-        <!-- ФОРМА ДОДАВАННЯ/РЕДАГУВАННЯ -->
         <div class="card" style="max-width: 800px; margin: 20px 0;">
-            <h2><?php echo $edit ? "✏️ Редагувати кімнату" : "➕ Додати нову кімнату"; ?></h2>
+            <h2><?php echo $edit ? " Редагувати кімнату" : " Додати нову кімнату"; ?></h2>
 
             <form method="post" action="?page=kpz_rooms">
                 <?php wp_nonce_field('kpz_room_action', 'kpz_room_nonce'); ?>
@@ -211,7 +216,7 @@ function kpz_rooms_page() {
 
                 <p class="submit">
                     <button type="submit" name="kpz_submit" class="button button-primary">
-                        <?php echo $edit ? '💾 Зберегти зміни' : '➕ Додати кімнату'; ?>
+                        <?php echo $edit ? ' Зберегти зміни' : ' Додати кімнату'; ?>
                     </button>
                     
                     <?php if ($edit): ?>
@@ -221,13 +226,11 @@ function kpz_rooms_page() {
             </form>
         </div>
 
-        <!-- СПИСОК КІМНАТ (READ) -->
         <hr style="margin: 30px 0;">
         
-        <h2>🏠 Список кімнат</h2>
+        <h2> Список кімнат</h2>
 
         <?php
-        // Пагінація
         $per_page = 15;
         $current_page = isset($_GET['paged']) ? max(1, intval($_GET['paged'])) : 1;
         $offset = ($current_page - 1) * $per_page;
@@ -240,15 +243,10 @@ function kpz_rooms_page() {
         ));
 
         if ($rooms):
-            // Підрахунок статистики
             $total_capacity = $wpdb->get_var("SELECT SUM(capacity) FROM $table");
+            $total_occupied = $wpdb->get_var("SELECT SUM(occupied) FROM $table");
         ?>
         
-        <div style="background: #f0f0f1; padding: 15px; margin-bottom: 20px; border-left: 4px solid #2271b1;">
-            <strong>📊 Статистика:</strong> 
-            Всього кімнат: <strong><?php echo $total; ?></strong> | 
-            Загальна кількість місць: <strong><?php echo $total_capacity; ?></strong>
-        </div>
         
         <table class="wp-list-table widefat fixed striped">
             <thead>
@@ -256,6 +254,7 @@ function kpz_rooms_page() {
                     <th scope="col" class="manage-column" style="width: 60px;">ID</th>
                     <th scope="col" class="manage-column">Номер кімнати</th>
                     <th scope="col" class="manage-column" style="width: 150px;">Кількість місць</th>
+                    <th scope="col" class="manage-column" style="width: 150px;">Зайнято</th>
                     <th scope="col" class="manage-column" style="width: 180px;">Дії</th>
                 </tr>
             </thead>
@@ -266,25 +265,35 @@ function kpz_rooms_page() {
                     <td><strong><?php echo esc_html($r->id); ?></strong></td>
                     <td>
                         <strong style="font-size: 15px;">
-                            🚪 Кімната <?php echo esc_html($r->room_number); ?>
+                             Кімната <?php echo esc_html($r->room_number); ?>
                         </strong>
                     </td>
                     <td>
-                        <span class="dashicons dashicons-groups" style="color: #2271b1;"></span>
                         <?php echo esc_html($r->capacity); ?> 
                         <?php echo $r->capacity == 1 ? 'місце' : ($r->capacity < 5 ? 'місця' : 'місць'); ?>
                     </td>
                     <td>
+                        <?php 
+                        $occupied = isset($r->occupied) ? $r->occupied : 0;
+                        $percent = $r->capacity > 0 ? round(($occupied / $r->capacity) * 100) : 0;
+                        $color = $percent >= 100 ? '#d63638' : ($percent >= 70 ? '#dba617' : '#00a32a');
+                        ?>
+                        <strong style="color: <?php echo $color; ?>">
+                            <?php echo $occupied; ?> / <?php echo $r->capacity; ?>
+                        </strong>
+                        (<?php echo $percent; ?>%)
+                    </td>
+                    <td>
                         <a href="?page=kpz_rooms&action=edit&id=<?php echo $r->id; ?>" 
                            class="button button-small">
-                            ✏️ Редагувати
+                             Редагувати
                         </a>
                         
                         <a href="?page=kpz_rooms&action=delete&id=<?php echo $r->id; ?>&_wpnonce=<?php echo wp_create_nonce('delete_room_' . $r->id); ?>" 
                            class="button button-small button-link-delete"
                            onclick="return confirm('Ви впевнені, що хочете видалити кімнату <?php echo esc_js($r->room_number); ?>?');"
                            style="color: #b32d2e;">
-                            🗑️ Видалити
+                             Видалити
                         </a>
                     </td>
                 </tr>
@@ -293,7 +302,6 @@ function kpz_rooms_page() {
         </table>
 
         <?php
-        // Пагінація
         if ($total > $per_page):
             $total_pages = ceil($total / $per_page);
         ?>
@@ -315,7 +323,7 @@ function kpz_rooms_page() {
 
         <?php else: ?>
             <div class="notice notice-info">
-                <p>📭 Кімнат ще немає. Додайте першу кімнату за допомогою форми вище!</p>
+                <p> Кімнат ще немає. Додайте першу кімнату за допомогою форми вище!</p>
             </div>
         <?php endif; ?>
 
@@ -330,9 +338,6 @@ function kpz_rooms_page() {
 }
 
 
-/* -------------------------
-   SHORTCODE FOR FRONTEND
---------------------------- */
 function kpz_rooms_shortcode() {
     global $wpdb;
     $table = $wpdb->prefix . "kpz_rooms";
@@ -344,16 +349,19 @@ function kpz_rooms_shortcode() {
     }
 
     $html = '<div class="kpz-rooms-list kpz-fade-in">';
-    $html .= '<h3>🏠 Кімнати гуртожитку</h3>';
+    $html .= '<h3> Кімнати гуртожитку</h3>';
     $html .= '<ul class="kpz-rooms-ul">';
 
     foreach ($rooms as $r) {
         $places_text = $r->capacity == 1 ? 'місце' : ($r->capacity < 5 ? 'місця' : 'місць');
+        $occupied = isset($r->occupied) ? $r->occupied : 0;
+        
         $html .= sprintf(
-            '<li class="kpz-room-item">🚪 Кімната <strong>%s</strong> — %d %s</li>',
+            '<li class="kpz-room-item"> Кімната <strong>%s</strong> — %d %s (зайнято: %d)</li>',
             esc_html($r->room_number),
             esc_html($r->capacity),
-            $places_text
+            $places_text,
+            esc_html($occupied)
         );
     }
 
@@ -398,3 +406,4 @@ function kpz_rooms_shortcode() {
     return $html;
 }
 add_shortcode("kpz_rooms_list", "kpz_rooms_shortcode");
+?>

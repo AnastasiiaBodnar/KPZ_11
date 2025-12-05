@@ -2,15 +2,11 @@
 /*
 Plugin Name: KPZ Dorm Students CRUD
 Description: CRUD для студентів гуртожитку + автоматичне оновлення зайнятих місць у кімнатах
-Version: 4.0
 Author: Anastasiia Bodnar
 */
 
 global $wpdb;
 
-/* -------------------------
-   CREATE TABLE
---------------------------- */
 function kpz_create_students_table() {
     global $wpdb;
     $table = $wpdb->prefix . "kpz_students";
@@ -32,9 +28,6 @@ function kpz_create_students_table() {
 register_activation_hook(__FILE__, 'kpz_create_students_table');
 
 
-/* -------------------------
-   ADMIN MENU
---------------------------- */
 function kpz_students_menu() {
     add_menu_page(
         "Студенти гуртожитку",
@@ -48,10 +41,6 @@ function kpz_students_menu() {
 }
 add_action("admin_menu", "kpz_students_menu");
 
-
-/* -------------------------
-   ADMIN PAGE (CRUD)
---------------------------- */
 function kpz_students_page() {
     global $wpdb;
 
@@ -62,20 +51,16 @@ function kpz_students_page() {
         wp_die("Недостатньо прав");
     }
 
-    /* -------------------------
-       DELETE STUDENT
-    --------------------------- */
+
     if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])) {
 
         $id = intval($_GET['id']);
 
-        // дізнаємося, у якій кімнаті він був
         $old_room = $wpdb->get_var($wpdb->prepare(
             "SELECT room_id FROM $students_table WHERE id=%d",
             $id
         ));
 
-        // якщо була кімната — звільняємо місце
         if ($old_room) {
             $wpdb->query($wpdb->prepare(
                 "UPDATE $rooms_table SET occupied = occupied - 1 
@@ -84,16 +69,12 @@ function kpz_students_page() {
             ));
         }
 
-        // видаляємо студента
         $wpdb->delete($students_table, ['id' => $id], ['%d']);
 
         echo "<div class='notice notice-success'><p>Студента видалено</p></div>";
     }
 
 
-    /* -------------------------
-       CREATE / UPDATE STUDENT
-    --------------------------- */
     if (isset($_POST['kpz_submit'])) {
 
         $id = intval($_POST['id']);
@@ -113,10 +94,8 @@ function kpz_students_page() {
 
         $format = ['%s','%s','%s','%d','%d'];
 
-        /* CREATE */
         if ($id == 0) {
 
-            // перевіряємо чи є місце
             if ($room_id) {
                 $free = $wpdb->get_row($wpdb->prepare(
                     "SELECT capacity, occupied FROM $rooms_table WHERE id=%d",
@@ -127,7 +106,6 @@ function kpz_students_page() {
                 } else {
                     $wpdb->insert($students_table, $data, $format);
 
-                    // зайняти місце
                     $wpdb->query($wpdb->prepare(
                         "UPDATE $rooms_table SET occupied = occupied + 1 WHERE id=%d",
                         $room_id
@@ -141,23 +119,18 @@ function kpz_students_page() {
             }
 
         } 
-        
-        /* UPDATE */
+
         else {
 
-            // стара кімната
             $old_room = $wpdb->get_var($wpdb->prepare(
                 "SELECT room_id FROM $students_table WHERE id=%d",
                 $id
             ));
 
-            // оновлюємо
             $wpdb->update($students_table, $data, ['id'=>$id], $format, ['%d']);
 
-            // якщо змінилася кімната
             if ($old_room != $room_id) {
 
-                // звільняємо стару
                 if ($old_room) {
                     $wpdb->query($wpdb->prepare(
                         "UPDATE $rooms_table SET occupied = occupied - 1 
@@ -166,7 +139,6 @@ function kpz_students_page() {
                     ));
                 }
 
-                // займаємо нову
                 if ($room_id) {
                     $wpdb->query($wpdb->prepare(
                         "UPDATE $rooms_table SET occupied = occupied + 1 
@@ -181,9 +153,6 @@ function kpz_students_page() {
     }
 
 
-    /* -------------------------
-       EDIT MODE
-    --------------------------- */
     $edit = null;
     if (isset($_GET['action']) && $_GET['action'] === 'edit') {
         $edit = $wpdb->get_row($wpdb->prepare(
@@ -192,9 +161,6 @@ function kpz_students_page() {
         ));
     }
 
-    /* -------------------------
-       GET ROOMS LIST
-    --------------------------- */
     $rooms = $wpdb->get_results("SELECT * FROM $rooms_table ORDER BY room_number ASC");
 
 
@@ -285,12 +251,12 @@ function kpz_students_page() {
                     <td><?php echo $s->room_number ?: "—" ?></td>
                     <td><?php echo $s->course ?></td>
                     <td>
-                        <a href="?page=kpz_students&action=edit&id=<?php echo $s->id ?>" class="button">✏️</a>
+                        <a href="?page=kpz_students&action=edit&id=<?php echo $s->id ?>" class="button">редагувати</a>
                         <a 
                             href="?page=kpz_students&action=delete&id=<?php echo $s->id ?>" 
                             class="button button-danger"
                             onclick="return confirm('Видалити?')"
-                        >🗑️</a>
+                        >Видалити</a>
                     </td>
                 </tr>
             <?php endforeach; ?>
@@ -299,4 +265,116 @@ function kpz_students_page() {
     </div>
 <?php
 }
+
+
+function kpz_students_shortcode() {
+    global $wpdb;
+    $students_table = $wpdb->prefix . "kpz_students";
+    $rooms_table = $wpdb->prefix . "kpz_rooms";
+
+    $students = $wpdb->get_results(
+        "SELECT s.*, r.room_number 
+         FROM $students_table s
+         LEFT JOIN $rooms_table r ON s.room_id = r.id
+         ORDER BY s.last_name ASC, s.first_name ASC"
+    );
+
+    if (empty($students)) {
+        return '<p>Список студентів порожній.</p>';
+    }
+
+    $html = '<div class="kpz-students-list kpz-fade-in">';
+    $html .= '<h3> Студенти гуртожитку</h3>';
+    
+    $html .= '<table class="kpz-students-table">';
+    $html .= '<thead>';
+    $html .= '<tr>';
+    $html .= '<th>ПІБ</th>';
+    $html .= '<th>Кімната</th>';
+    $html .= '<th>Курс</th>';
+    $html .= '</tr>';
+    $html .= '</thead>';
+    $html .= '<tbody>';
+
+    foreach ($students as $s) {
+        $full_name = $s->last_name . ' ' . $s->first_name;
+        if (!empty($s->patronymic)) {
+            $full_name .= ' ' . $s->patronymic;
+        }
+        
+        $room = $s->room_number ? 'Кімната ' . esc_html($s->room_number) : '—';
+        
+        $html .= '<tr class="kpz-student-row">';
+        $html .= '<td>' . esc_html($full_name) . '</td>';
+        $html .= '<td>' . $room . '</td>';
+        $html .= '<td>' . esc_html($s->course) . ' курс</td>';
+        $html .= '</tr>';
+    }
+
+    $html .= '</tbody>';
+    $html .= '</table>';
+    $html .= '</div>';
+    
+    $html .= '<style>
+        .kpz-students-list { 
+            margin: 20px 0; 
+        }
+        
+        .kpz-students-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .kpz-students-table thead {
+            background: #0073aa;
+            color: white;
+        }
+        
+        .kpz-students-table th {
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .kpz-student-row {
+            border-bottom: 1px solid #ddd;
+            transition: background 0.3s ease;
+        }
+        
+        .kpz-student-row:hover {
+            background: #f0f0f1;
+        }
+        
+        .kpz-students-table td {
+            padding: 12px;
+        }
+        
+        /* Анімація появи */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .kpz-fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+        
+        .kpz-student-row {
+            animation: fadeIn 0.8s ease-out backwards;
+        }
+        
+        .kpz-student-row:nth-child(1) { animation-delay: 0.1s; }
+        .kpz-student-row:nth-child(2) { animation-delay: 0.15s; }
+        .kpz-student-row:nth-child(3) { animation-delay: 0.2s; }
+        .kpz-student-row:nth-child(4) { animation-delay: 0.25s; }
+        .kpz-student-row:nth-child(5) { animation-delay: 0.3s; }
+        .kpz-student-row:nth-child(6) { animation-delay: 0.35s; }
+        .kpz-student-row:nth-child(7) { animation-delay: 0.4s; }
+        .kpz-student-row:nth-child(8) { animation-delay: 0.45s; }
+    </style>';
+
+    return $html;
+}
+add_shortcode("kpz_students_list", "kpz_students_shortcode");
 ?>

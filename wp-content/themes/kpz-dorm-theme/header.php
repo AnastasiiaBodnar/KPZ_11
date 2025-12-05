@@ -13,7 +13,6 @@
     <nav style="margin-bottom: 20px;">
         <a href="/">Головна</a> |
         <a href="/rooms">Кімнати</a> |
-        <a href="/students">Студенти</a> |
-        <a href="/dashboard">Панель</a>
+        <a href="/students">Студенти</a>
     </nav>
 </header>
